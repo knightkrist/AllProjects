@@ -1,18 +1,17 @@
 ﻿using AllProjects.DataContext;
-using Azure.Core;
+using AllProjects.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
-using System.Linq;
 
-namespace AllProjects.Models
+namespace AllProjects.Schema
 {
     public class Query
     {
         [GraphQLDeprecated("this is no longer used")]
         public string inputData { get; set; } = "All of the projects and lets see";
 
-        
+
         public async Task<IEnumerable<Users>> getStrings([FromServices] SQLDataContext context, [GlobalState] string Authorization)
         {
             IEnumerable<Users> courses = await context.MyUser.ToListAsync();

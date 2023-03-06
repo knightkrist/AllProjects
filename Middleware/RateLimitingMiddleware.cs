@@ -23,9 +23,9 @@ namespace AllProjects.Middleware
             //services.Configure<ClientRateLimitOptions>(options => configuration.GetSection("ClientRateLimitingSettings").Bind(options));
 
             // Inject Counter and Store Rules using Distributed Cache Store
-            services.AddSingleton<IRateLimitCounterStore, DistributedCacheRateLimitCounterStore>();
+            //services.AddSingleton<IRateLimitCounterStore, DistributedCacheRateLimitCounterStore>();
 
-            services.AddDistributedRateLimiting();
+            //services.AddDistributedRateLimiting();
 
             // Return the services
             return services;

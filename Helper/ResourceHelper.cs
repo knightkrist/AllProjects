@@ -10,7 +10,7 @@ namespace AllProjects.Helper
         public static Task ReturnQuotaExceededResponseText(HttpContext httpContext, RateLimitRule rule, string retryAfter)
         {
             string path = httpContext.Request.Path.Value;
-            string str = "API calls quota exceeded! Maximum API limit is " + rule.Limit + " requests for every " + rule.Period;
+            string str = "API calls quota exceeded! Maximum API limit is " + (rule.Limit - 2) + " requests for every " + rule.Period;
             Status status = new Status() { status = false, statuscode = (int)HttpStatusCode.TooManyRequests, message = str };
             var result = JsonConvert.SerializeObject(status);
             httpContext.Response.Headers["Retry-After"] = retryAfter;

@@ -1,8 +1,10 @@
 ﻿using AllProjects.DataContext;
+using AllProjects.Interface;
 using AllProjects.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Internal;
 
 namespace AllProjects.Schema
 {
@@ -11,20 +13,40 @@ namespace AllProjects.Schema
         [GraphQLDeprecated("this is no longer used")]
         public string inputData { get; set; } = "All of the projects and lets see";
 
+        //private readonly IHolidayRegistrationService _service;
+        //private readonly IDbContextFactory<SQLDataContext> _contextFactory;
+        private readonly IGetStringsInterface _getStrings;
+        private readonly IDatabaseInterface _database;
 
-        public async Task<IEnumerable<Users>> getStrings([FromServices] SQLDataContext context, [GlobalState] string Authorization)
+        public Query(IDatabaseInterface database, IGetStringsInterface getStrings) //IDbContextFactory<SQLDataContext> contextFactory,
         {
+            _database = database;
+            //_contextFactory = contextFactory;
+            _getStrings = getStrings;
+        }
+
+
+        public async Task<IEnumerable<CustomerDTO>> getStrings([FromServices] SQLDataContext context, [GlobalState] string Authorization)
+        {
+            //using (SQLDataContext context1 = _contextFactory.CreateDbContext())
+            //{
+            //    var test = await context1.MyUser.ToListAsync();
+            //}
+
+            var te = _getStrings.GetUserStrings().Result;
+
+            var res = _database.GetOrders().Result;
+
+            var res1 = _database.GetCustomerStoredStructure(1).Result;
+
             IEnumerable<Users> courses = await context.MyUser.ToListAsync();
 
-            IEnumerable<Users> courses1 = await context.MyUser.FromSqlRaw<Users>("GetUsers")
-                .ToListAsync();
+            //IEnumerable<Users> courses1 = await context.MyUser.FromSqlRaw<Users>("GetUsers").ToListAsync();
 
+            var parameter = new List<SqlParameter>();
             var param = new SqlParameter("@ID", 1);
-
-            var productDetails = await Task.Run(() => context.MyUser
-                            .FromSqlRaw(@"exec GetUsersByID @ID", param).ToListAsync());
-
-
+            parameter.Add(param);
+            //var productDetails = await Task.Run(() => context.MyUser.FromSqlRaw(@"exec GetUsersByID @ID", parameter.ToArray()).ToListAsync());
 
             //string authorization = Request.Headers["Authorization"].ToString();
 
@@ -39,7 +61,7 @@ namespace AllProjects.Schema
             //    })
             //    .ToListAsync();
 
-            return courses;
+            return res1;
         }
 
         public async Task<int> AddProductAsync([FromServices] SQLDataContext context, Users product)
